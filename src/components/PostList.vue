@@ -1,12 +1,18 @@
 <template>
-    <div class="post" v-for="post in posts">
-        <h3 class="post__title">{{ post.title }}</h3>
-        <p class="post__description">{{ post.description}} </p>
+    <div class="posts" v-if="posts.length > 0">
+        <h2 class="subtitle">List of users</h2>
+        <transition-group name="posts-list">
+            <post-item v-for="post in posts" :post="post" :key="post.id" @remove="$emit('remove', post)"/>
+        </transition-group>
     </div>
+    <h2 class="subtitle" v-else>List of users is empty</h2>
 </template>
 
 <script>
+    import PostItem from "./PostItem";
+
     export default {
+        components: {PostItem},
         props: {
             posts: {
                 type: Array,
@@ -17,9 +23,22 @@
 </script>
 
 <style scoped>
-    .post {
-        margin: 30px 0;
-        box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
-        padding: 20px;
+    .posts-list-item {
+        display: inline-block;
+        margin-right: 10px;
+    }
+    .posts-list-enter-active,
+    .posts-list-leave-active {
+        transition: all 0.4s ease;
+    }
+
+    .posts-list-enter-from,
+    .posts-list-leave-to {
+        opacity: 0;
+        transform: translateX(130px);
+    }
+
+    .posts-list-move {
+        transition: transform 0.4s ease;
     }
 </style>
