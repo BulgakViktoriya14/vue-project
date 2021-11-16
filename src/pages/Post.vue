@@ -1,5 +1,6 @@
 <template>
-    <h1>Post page ID = {{ $route.params.id }}</h1>
+    <main-title title='Post page ID = {{ $route.params.id }}'></main-title>
+    <h1></h1>
 </template>
 
 <script>

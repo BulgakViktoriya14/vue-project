@@ -31,5 +31,6 @@
     .modal-window__content {
         padding: 20px;
         background-color: #fff;
+        width: 50%;
     }
 </style>

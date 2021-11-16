@@ -1,52 +1,45 @@
 <template>
     <div class="content__posts">
-        {{  }}
-<!--        <h1 class="title">Page posts</h1>-->
-<!--        <h5>likes: {{ $store.state.likes }}</h5>-->
-<!--        <button-default @click="$store.commit('incrementLikes')">Like</button-default>-->
-<!--        <button-default @click="$store.commit('decrementLikes')">Dislike</button-default>-->
-<!--        <input-default v-model="searchQuery" type="text" placeholder="Search..."/>-->
-<!--        <button-default @click="showModalWindow">Add post</button-default>-->
-<!--        <select-default v-model="selectedSort" :options="sortOptions"/>-->
-<!--        <modal-window v-model:show="dialogVisible">-->
-<!--            <post-form @create="createPost"/>-->
-<!--        </modal-window>-->
-<!--        <post-list v-if="!isPostLoading" :posts="sortedAndSearchPosts" @remove="removePost"/>-->
-<!--        <h4 v-else>Loading...</h4>-->
-<!--        <div class="pager">-->
-<!--            <div v-for="pageNumber in totalPage" :key="page" class="pager__item"-->
-<!--                 :class="{'pager__item_current': page === pageNumber }" @click="changePage(pageNumber)">-->
-<!--                {{ pageNumber }}-->
-<!--            </div>-->
-<!--        </div>-->
+        <main-title title="Posts"></main-title>
+        <post-top class="posts_top">
+            <input-default :model-value="searchQuery" @update:model-value="setSearchQuery" type="text" placeholder="Search..." class="input-search"/>
+            <button-default @click="showModalWindow" class="button-add">Add post</button-default>
+            <select-default :model-value="selectedSort" @update:model-value="setSelectedSort" :options="sortOptions" class="select-sort"/>
+        </post-top>
+        <modal-window v-model:show="dialogVisible">
+            <post-form @create="createPost"/>
+        </modal-window>
+        <post-list v-if="!isPostLoading" :posts="sortedAndSearchPosts" @remove="removePost"/>
+        <h4 v-else>Loading...</h4>
+        <Pager :page="page" :totalPage="totalPages" :limit="limit" @changePage="setPage"/>
     </div>
 </template>
 <script>
     import PostForm from './../components/PostForm';
     import PostList from './../components/PostList';
-    import axios from "axios";
     import ButtonDefault from "../components/UI/ButtonDefault";
+    import Pager from "../components/Pager";
+    import {mapState, mapGetters, mapActions, mapMutations} from 'vuex'
+    import PostTop from "../components/PostTop";
 
     export default {
-        components: {ButtonDefault, PostList, PostForm},
+        components: {PostTop, ButtonDefault, PostList, PostForm, Pager},
         data() {
             return {
-                posts: [],
                 dialogVisible: false,
-                isPostLoading: false,
-                selectedSort: '',
-                searchQuery: '',
-                page: 1,
-                limit: 10,
-                totalPage: 0,
-                sortOptions: [
-                    {value: 'title', name: 'By title'},
-                    {value: 'body', name: 'By description'}
-                ]
             }
         },
 
         methods: {
+            ...mapMutations({
+                setPage: 'post/setPage',
+                setSearchQuery: 'post/setSearchQuery',
+                setSelectedSort: 'post/setSelectedSort',
+            }),
+            ...mapActions({
+                fetchPosts: 'post/fetchPosts'
+            }),
+
             createPost(post) {
                 this.posts.push(post);
                 this.dialogVisible = false;
@@ -59,48 +52,29 @@
             showModalWindow() {
                 this.dialogVisible = true;
             },
-
-            changePage(pageNumber) {
-                this.page = pageNumber;
-            },
-
-            // async fetchPosts({state, commit}) {
-            //     try {
-            //         commit('setLoading', true);
-            //         const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
-            //             params: {
-            //                 _page: state.page,
-            //                 _limit: state.limit
-            //             }
-            //         });
-            //         commit('setTotalPages', Math.ceil(response.headers['x-total-count'] / state.limit));
-            //         commit('setPosts', response.data);
-            //     } catch (e) {
-            //         console.log("error");
-            //     } finally {
-            //         commit('setLoading', false);
-            //     }
-            // }
         },
+
         mounted() {
-            // this.fetchPosts();
+            this.fetchPosts();
         },
 
         computed: {
-            sortedPosts() {
-                return [...this.posts].sort((post1, post2) => post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]));
-            },
-
-            sortedAndSearchPosts() {
-                return this.sortedPosts.filter(post => post.title.toLowerCase().includes(this.searchQuery.toLowerCase()));
-            }
+            ...mapState({
+                posts: state => state.post.posts,
+                isPostsLoading: state => state.post.isPostsLoading,
+                selectedSort: state => state.post.selectedSort,
+                searchQuery: state => state.post.searchQuery,
+                page: state => state.post.page,
+                limit: state => state.post.limit,
+                totalPages: state => state.post.totalPages,
+                sortOptions: state => state.post.sortOptions,
+                isPostLoading: state => state.post.isPostLoading,
+            }),
+            ...mapGetters({
+                sortedPosts: 'post/sortedPosts',
+                sortedAndSearchPosts: 'post/sortedAndSearchPosts'
+            })
         },
-
-        watch: {
-            page() {
-                this.fetchPosts();
-            }
-        }
     }
 </script>
 <style>

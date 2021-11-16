@@ -1,29 +1,28 @@
 <template>
     <div class="content__posts">
-        <h1 class="title">Page posts</h1>
-        <input-default v-model="searchQuery" type="text" placeholder="Search..."/>
-        <button-default @click="showModalWindow">Add post</button-default>
-        <select-default v-model="selectedSort" :options="sortOptions"/>
+        <main-title title="Posts"></main-title>
+        <post-top>
+            <input-default v-model="searchQuery" type="text" placeholder="Search..." class="input-search"/>
+            <button-default @click="showModalWindow" class="button-add">Add post</button-default>
+            <select-default v-model="selectedSort" :options="sortOptions" class="select-sort"/>
+        </post-top>
         <modal-window v-model:show="dialogVisible">
             <post-form @create="createPost"/>
         </modal-window>
         <post-list v-if="!isPostLoading" :posts="sortedAndSearchPosts" @remove="removePost"/>
         <h4 v-else>Loading...</h4>
-        <div class="pager">
-            <div v-for="pageNumber in totalPage" :key="page" class="pager__item"
-                 :class="{'pager__item_current': page === pageNumber }" @click="changePage(pageNumber)">
-                {{ pageNumber }}
-            </div>
-        </div>
+        <Pager :page="page" :totalPage="totalPage" :limit="limit" @changePage="changePage"/>
     </div>
 </template>
 <script>
     import PostForm from './../components/PostForm';
     import PostList from './../components/PostList';
     import axios from "axios";
+    import Pager from "../components/Pager";
+    import PostTop from "../components/PostTop";
 
     export default {
-        components: {PostList, PostForm},
+        components: {PostTop, Pager, PostList, PostForm},
         data() {
             return {
                 posts: [],
@@ -98,6 +97,33 @@
         }
     }
 </script>
-<style>
 
+<style>
+    .input-search,
+    .button-add,
+    .select-sort {
+        width: 100%;
+    }
+
+    .button-add {
+        margin: 0 0 20px 0;
+    }
+
+    .input-search {
+        width: calc(100% - 20px);
+    }
+
+    @media screen and (min-width: 1020px) {
+        .input-search {
+            width: 50%;
+        }
+
+        .button-add {
+            width: 20%;
+        }
+
+        .select-sort {
+            width: 20%;
+        }
+    }
 </style>

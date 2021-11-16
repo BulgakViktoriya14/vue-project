@@ -18,11 +18,11 @@
 
 <style scoped>
     .input {
-        width: 33%;
         font-size: 16px;
-        padding: 10px 10px 0;
+        padding: 10px;
         border: none;
         border-bottom: 1px solid #000;
         outline: none;
+        margin: 0 0 20px 0;
     }
 </style>

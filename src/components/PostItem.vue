@@ -20,10 +20,25 @@
     }
 </script>
 
-<style scoped>
+<style>
     .post {
         margin: 30px 0;
         box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
         padding: 20px;
+    }
+
+    .post__buttons {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .post__buttons .button {
+        border: 3px solid #e53f00;
+        background-color: transparent;
+        color: #e53f00;
+    }
+
+    .post__buttons .button:first-child {
+        margin: 0 20px 0 0;
     }
 </style>

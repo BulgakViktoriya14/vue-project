@@ -35,6 +35,7 @@
     .form {
         display: flex;
         justify-content: space-between;
+        flex-direction: column;
         padding: 40px;
         border: 1px solid #000;
     }

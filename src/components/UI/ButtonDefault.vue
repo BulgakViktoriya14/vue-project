@@ -13,7 +13,7 @@
 <style scoped>
     .button {
         padding: 15px 30px;
-        background-color: #ff4600;
+        background-color: #e53f00;
         color: #fff;
         font-weight: bold;
         font-family: Arial, sans-serif;
